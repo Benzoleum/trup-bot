@@ -1,32 +1,49 @@
 package com.shashla.trup_bot.service;
 
+import com.shashla.trup_bot.cache.CacheUserRepository;
 import com.shashla.trup_bot.db.UserRepository;
+import com.shashla.trup_bot.cache.CacheUser;
 import com.shashla.trup_bot.user.User;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
-import java.util.Optional;
 
 @Service
 public class UserService {
 
-    @Autowired
-    private UserRepository userRepository;
+    private final CacheUserRepository cacheUserRepository;
+    private final UserRepository userRepository;
 
-    public void addUserToCache(User user) {
-        userRepository.save(user);
+    public UserService(CacheUserRepository cacheUserRepository, UserRepository userRepository) {
+        this.cacheUserRepository = cacheUserRepository;
+        this.userRepository = userRepository;
     }
 
-    public void incrementMessageCountInCache(Long userId) {
-        Optional<User> userOptional = userRepository.findById(userId);
-        if (userOptional.isPresent()) {
-            User user = userOptional.get();
-            user.incrementMessageCount();
-            userRepository.save(user); // Save the updated user
+    public CacheUser saveNewUserToCache(long id, String username) {
+        return cacheUserRepository.save(new CacheUser(id, username, 1));
+    }
+
+    public CacheUser updateExistingUserInCache(long id) {
+        CacheUser cacheUser = cacheUserRepository.findById(id).get();
+        cacheUser.incrementMessageCount();
+        return cacheUserRepository.save(cacheUser);
+    }
+
+    public void insertOrUpdateUserInCache(long id, String username) {
+        if (cacheUserRepository.existsById(id)) {
+            updateExistingUserInCache(id);
+        } else {
+            saveNewUserToCache(id, username);
         }
     }
 
-    public Iterable<User> getUserCache() {
-        return userRepository.findAll();
+    public Iterable<CacheUser> getAllCacheUsers() {
+        return cacheUserRepository.findAll();
+    }
+
+    public void persistCacheToDB() {
+        Iterable<CacheUser> cachedUsers = cacheUserRepository.findAll();
+        for (CacheUser cacheUser : cachedUsers) {
+            User user = new User(cacheUser.getUserId(), cacheUser.getUsername(), cacheUser.getMessageCount());
+            userRepository.save(user);
+        }
     }
 }
