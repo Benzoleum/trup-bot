@@ -1,7 +1,7 @@
 package com.shashla.trup_bot.bot;
 
 import com.shashla.trup_bot.config.BotConfigProperties;
-import com.shashla.trup_bot.service.UserService;
+import com.shashla.trup_bot.service.CacheUserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.telegram.telegrambots.bots.TelegramLongPollingBot;
@@ -11,13 +11,13 @@ import org.telegram.telegrambots.meta.api.objects.Update;
 public class Bot extends TelegramLongPollingBot {
 
     private final BotConfigProperties botConfigProperties;
-    private final UserService userService;
+    private final CacheUserService cacheUserService;
 
     @Autowired
-    public Bot(BotConfigProperties botConfigProperties, UserService userService) {
+    public Bot(BotConfigProperties botConfigProperties, CacheUserService cacheUserService) {
         super(botConfigProperties.getBotToken());
         this.botConfigProperties = botConfigProperties;
-        this.userService = userService;
+        this.cacheUserService = cacheUserService;
     }
 
     @Override
@@ -30,7 +30,7 @@ public class Bot extends TelegramLongPollingBot {
                 Long userId = user.getId();
                 String username = user.getUserName();
 
-                userService.insertOrUpdateUserInCache(userId, username);
+                cacheUserService.insertOrUpdateUserInCache(userId, username);
             }
         }
     }

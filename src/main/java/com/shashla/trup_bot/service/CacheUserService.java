@@ -7,12 +7,12 @@ import com.shashla.trup_bot.user.User;
 import org.springframework.stereotype.Service;
 
 @Service
-public class UserService {
+public class CacheUserService {
 
     private final CacheUserRepository cacheUserRepository;
     private final UserRepository userRepository;
 
-    public UserService(CacheUserRepository cacheUserRepository, UserRepository userRepository) {
+    public CacheUserService(CacheUserRepository cacheUserRepository, UserRepository userRepository) {
         this.cacheUserRepository = cacheUserRepository;
         this.userRepository = userRepository;
     }
