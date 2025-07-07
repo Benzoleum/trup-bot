@@ -6,8 +6,8 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 @SpringBootApplication
 public class TrupBotApplication {
 
-	public static void main(String[] args) {
-		SpringApplication.run(TrupBotApplication.class, args);
-	}
+    public static void main(String[] args) {
+        SpringApplication.run(TrupBotApplication.class, args);
+    }
 
 }
