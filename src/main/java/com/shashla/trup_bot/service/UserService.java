@@ -21,7 +21,7 @@ public class UserService {
             logger.info("registering new user in cache: " + id + " - " + username);
             userCache.put(id, new User(id, username, 1));
         } else {
-            logger.info("updating existing user in cache: " + id + " - " + username);
+            logger.trace("updating existing user in cache: " + id + " - " + username + " with message count: " + userCache.get(id).getMessageCount());
             userCache.get(id).incrementMessageCount();
         }
     }

@@ -17,7 +17,7 @@ public class PersistCache {
     @Autowired
     UserRepository userRepository;
 
-    @Scheduled(fixedRate = 60000)
+    @Scheduled(fixedRate = 3600000, initialDelay = 3600000)
     private void persistCache() {
         logger.info("persisting user cache");
         userRepository.saveAll(userService.getAllCacheUsers());
