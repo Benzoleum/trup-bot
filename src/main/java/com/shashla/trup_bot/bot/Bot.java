@@ -1,6 +1,7 @@
 package com.shashla.trup_bot.bot;
 
 import com.shashla.trup_bot.config.BotConfigProperties;
+import com.shashla.trup_bot.service.LogSenderService;
 import com.shashla.trup_bot.service.UserService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -16,12 +17,15 @@ public class Bot extends TelegramLongPollingBot {
 
     private final BotConfigProperties botConfigProperties;
     private final UserService userService;
+    private final LogSenderService logSenderService;
 
     @Autowired
-    public Bot(BotConfigProperties botConfigProperties, UserService userService) {
+    public Bot(BotConfigProperties botConfigProperties, UserService userService, LogSenderService logSenderService) {
         super(botConfigProperties.getBotToken());
         this.botConfigProperties = botConfigProperties;
         this.userService = userService;
+        this.logSenderService = logSenderService;
+        logger.info("bot initialized created");
     }
 
     @Override
@@ -54,7 +58,10 @@ public class Bot extends TelegramLongPollingBot {
     }
 
     public void updateFromPersonalChat(Update update) {
-
+        var msg = update.getMessage();
+        if (msg.getText().equals("/log")) {
+            logSenderService.sendLogFile();
+        }
     }
 
 
