@@ -1,0 +1,39 @@
+package com.shashla.trup_bot.service;
+
+import com.shashla.trup_bot.user.User;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.stereotype.Service;
+
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+@Service
+public class UserService {
+
+    private static final Logger logger = LoggerFactory.getLogger(UserService.class);
+
+    private Map<Long, User> userCache = new HashMap<>();
+
+    public void updateOrCreateUserInCache(long id, String username) {
+        if (!userCache.containsKey(id)) {
+            logger.info("registering new user in cache: " + id + " - " + username);
+            userCache.put(id, new User(id, username, 1));
+        } else {
+            logger.info("updating existing user in cache: " + id + " - " + username);
+            userCache.get(id).incrementMessageCount();
+        }
+    }
+
+    public List<User> getAllCacheUsers() {
+        return userCache.values().stream().toList();
+    }
+
+    public void syncCacheWithDb(Iterable<User> users) {
+        for (User user : users) {
+            logger.info("syncing user from db: " + user.getUsername() + " with message count: " + user.getMessageCount());
+            userCache.put(user.getUserId(), user);
+        }
+    }
+}

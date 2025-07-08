@@ -1,7 +1,7 @@
 package com.shashla.trup_bot.bot;
 
 import com.shashla.trup_bot.config.BotConfigProperties;
-import com.shashla.trup_bot.service.CacheUserService;
+import com.shashla.trup_bot.service.UserService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,13 +15,13 @@ public class Bot extends TelegramLongPollingBot {
     private static final Logger logger = LoggerFactory.getLogger(Bot.class);
 
     private final BotConfigProperties botConfigProperties;
-    private final CacheUserService cacheUserService;
+    private final UserService userService;
 
     @Autowired
-    public Bot(BotConfigProperties botConfigProperties, CacheUserService cacheUserService) {
+    public Bot(BotConfigProperties botConfigProperties, UserService userService) {
         super(botConfigProperties.getBotToken());
         this.botConfigProperties = botConfigProperties;
-        this.cacheUserService = cacheUserService;
+        this.userService = userService;
     }
 
     @Override
@@ -30,17 +30,17 @@ public class Bot extends TelegramLongPollingBot {
         if (update != null && update.hasMessage()) {
             chatId = update.getMessage().getChatId();
             if (update.hasMessage()) {
-                if (chatId == Long.parseLong(botConfigProperties.getPersonalChatId())) {
+                if (chatId == Long.parseLong(botConfigProperties.getPersonalChatId()) || chatId == Long.parseLong(botConfigProperties.getGcChatId())) {
                     var msg = update.getMessage();
                     var user = msg.getFrom();
                     Long userId = user.getId();
                     String username = user.getUserName();
 
-                    cacheUserService.insertOrUpdateUserInCache(userId, username);
+                    userService.updateOrCreateUserInCache(userId, username);
                 }
             }
         } else {
-            logger.info("Received update from unknown chat: " + chatId + ". Ignoring.");
+            logger.info("received update from an unknown chat: " + chatId + ". Ignoring.");
         }
     }
 

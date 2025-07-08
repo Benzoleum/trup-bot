@@ -14,19 +14,36 @@ public class User {
 
     @Id
     private Long userId;
-
     private String username;
-    private String nickname;
     private int messageCount;
+    //TODO implement trup count notification msg
+    private int trupCount;
+    private String nickname;
 
     public User(Long userId, String username, int messageCount) {
         this.userId = userId;
         this.username = username;
         this.messageCount = messageCount;
+        resolveNickname(username);
+    }
+
+    public void resolveNickname(String username) {
+        if (username.equals("Ayan_A_B")) {
+            this.nickname = "Величайший";
+        } else if (username.equals("Timur996")) {
+            this.nickname = "Тимур";
+        } else if (username.equals("bfaiziev")) {
+            this.nickname = "Бахадур";
+        } else if (username.equals("V3034V")) {
+            this.nickname = "Володя";
+        } else if (username.equals("benzoleum")) {
+            this.nickname = "Лук";
+        } else {
+            this.nickname = "not_recognized";
+        }
     }
 
     public void incrementMessageCount() {
         this.messageCount++;
     }
-
 }

@@ -17,9 +17,9 @@ public class BotRegistrationConfig {
     @Bean
     public TelegramBotsApi telegramBotsApi(Bot bot) throws Exception {
         TelegramBotsApi telegramBotsApi = new TelegramBotsApi(DefaultBotSession.class);
-        logger.info("Registering bot...");
+        logger.info("registering bot...");
         telegramBotsApi.registerBot(bot);
-        logger.info("Bot registered.");
+        logger.info("bot registered");
         return telegramBotsApi;
     }
 }
