@@ -46,4 +46,8 @@ public class User {
     public void incrementMessageCount() {
         this.messageCount++;
     }
+
+    public void resetMessageCount() {
+        this.messageCount = 0;
+    }
 }

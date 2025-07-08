@@ -36,4 +36,10 @@ public class UserService {
             userCache.put(user.getUserId(), user);
         }
     }
+
+    public void resetUserMessageCountInCache() {
+        for (User userInCache : userCache.values()) {
+            userInCache.resetMessageCount();
+        }
+    }
 }
