@@ -39,7 +39,22 @@ public class UserService {
 
     public void resetUserMessageCountInCache() {
         for (User userInCache : userCache.values()) {
+            logger.info("resetting user message count in cache: " + userInCache.getUsername());
             userInCache.resetMessageCount();
+            logger.info("user message count reset: " + userInCache.getMessageCount());
         }
+    }
+
+    public User getTrup() {
+        int max = Integer.MAX_VALUE;
+        User trup = null;
+        for (User user : getAllCacheUsers()) {
+            if (user.getMessageCount() < max) {
+                max = user.getMessageCount();
+                trup = user;
+            }
+        }
+        logger.info("trup: " + trup.getUsername() + " with message count: " + trup.getMessageCount());
+        return trup;
     }
 }

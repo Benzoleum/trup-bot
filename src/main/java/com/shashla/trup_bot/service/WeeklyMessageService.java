@@ -1,6 +1,7 @@
 package com.shashla.trup_bot.service;
 
 import com.shashla.trup_bot.config.BotConfigProperties;
+import com.shashla.trup_bot.user.User;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,13 +16,13 @@ import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
 public class WeeklyMessageService extends DefaultAbsSender {
     private static final Logger logger = LoggerFactory.getLogger(WeeklyMessageService.class);
 
-    TrupService trupService;
+    UserService userService;
     private BotConfigProperties botConfigProperties;
 
     @Autowired
-    public WeeklyMessageService(BotConfigProperties botConfigProperties, TrupService trupService) {
+    public WeeklyMessageService(BotConfigProperties botConfigProperties, UserService userService) {
         this(new DefaultBotOptions(), botConfigProperties.getBotToken());
-        this.trupService = trupService;
+        this.userService = userService;
         this.botConfigProperties = botConfigProperties;
     }
 
@@ -30,7 +31,7 @@ public class WeeklyMessageService extends DefaultAbsSender {
     }
 
     @Scheduled(cron = "0 0 10 ? * SUN")
-    private void sendTestMsg() {
+    private void sendOutTrupMessage() {
         try {
             SendMessage message = new SendMessage();
             message.setChatId(botConfigProperties.getPersonalChatId());
@@ -38,15 +39,29 @@ public class WeeklyMessageService extends DefaultAbsSender {
             message.setText("В Лондоне воскресенье, 10 утра.");
             execute(message);
 
-            message.setText(trupService.prepareStatsForAWeek());
+            message.setText(weeklyStatsMessage());
             execute(message);
 
-            message.setText(trupService.chooseTrup());
+            message.setText(trupMessage());
             execute(message);
 
         } catch (TelegramApiException e) {
             logger.error("Failed to send the message to chat", e);
             throw new RuntimeException(e);
         }
+    }
+
+    protected String weeklyStatsMessage() {
+        StringBuilder sb = new StringBuilder();
+        for (User user : userService.getAllCacheUsers()) {
+            sb.append(user.getNickname()).append(" написал ").append(user.getMessageCount()).append(" сообщений за неделю.\n");
+        }
+        return sb.toString();
+    }
+
+    protected String trupMessage() {
+        StringBuilder sb = new StringBuilder();
+        sb.append(userService.getTrup().getNickname() + " написал меньше всех. " + userService.getTrup().getNickname() + "- труп недели. Поздравляю.");
+        return sb.toString();
     }
 }
