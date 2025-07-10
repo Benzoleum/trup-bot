@@ -55,6 +55,7 @@ public class UserService {
             }
         }
         logger.info("trup: " + trup.getUsername() + " with message count: " + trup.getMessageCount());
+        trup.incrementTrupCount();
         return trup;
     }
 }
