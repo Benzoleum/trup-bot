@@ -61,7 +61,14 @@ public class WeeklyMessageService extends DefaultAbsSender {
 
     protected String trupMessage() {
         StringBuilder sb = new StringBuilder();
-        sb.append(userService.getTrup().getNickname() + " написал меньше всех. " + userService.getTrup().getNickname() + "- труп недели. Поздравляю.");
+        User trup = getTrupResetCache();
+        sb.append(trup.getNickname() + " написал меньше всех. " + trup.getNickname() + "- труп недели. Поздравляю.");
         return sb.toString();
+    }
+
+    private User getTrupResetCache() {
+        User trup = userService.getTrup();
+        userService.resetUserMessageCountInCache();
+        return trup;
     }
 }
