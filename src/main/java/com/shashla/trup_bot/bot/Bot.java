@@ -4,6 +4,7 @@ import com.shashla.trup_bot.config.BotConfigProperties;
 import com.shashla.trup_bot.service.LogSenderService;
 import com.shashla.trup_bot.service.StatusMessageService;
 import com.shashla.trup_bot.service.UserService;
+import com.shashla.trup_bot.service.UserStatsMessageService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,14 +21,16 @@ public class Bot extends TelegramLongPollingBot {
     private final UserService userService;
     private final LogSenderService logSenderService;
     private final StatusMessageService statusMessageService;
+    private final UserStatsMessageService userStatsMessageService;
 
     @Autowired
-    public Bot(BotConfigProperties botConfigProperties, UserService userService, LogSenderService logSenderService, StatusMessageService statusMessageService) {
+    public Bot(BotConfigProperties botConfigProperties, UserService userService, LogSenderService logSenderService, StatusMessageService statusMessageService, UserStatsMessageService userStatsMessageService) {
         super(botConfigProperties.getBotToken());
         this.botConfigProperties = botConfigProperties;
         this.userService = userService;
         this.logSenderService = logSenderService;
         this.statusMessageService = statusMessageService;
+        this.userStatsMessageService = userStatsMessageService;
         logger.info("bot initialized created");
     }
 
@@ -69,6 +72,10 @@ public class Bot extends TelegramLongPollingBot {
 
         if (msg.getText().equals("/status")) {
             statusMessageService.sendStatusMessage();
+        }
+
+        if (msg.getText().equals("/stats")) {
+            userStatsMessageService.sendUserStatsMessage();
         }
     }
 
