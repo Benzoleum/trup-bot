@@ -2,6 +2,7 @@ package com.shashla.trup_bot.bot;
 
 import com.shashla.trup_bot.config.BotConfigProperties;
 import com.shashla.trup_bot.service.LogSenderService;
+import com.shashla.trup_bot.service.StatusMessageService;
 import com.shashla.trup_bot.service.UserService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -18,13 +19,15 @@ public class Bot extends TelegramLongPollingBot {
     private final BotConfigProperties botConfigProperties;
     private final UserService userService;
     private final LogSenderService logSenderService;
+    private final StatusMessageService statusMessageService;
 
     @Autowired
-    public Bot(BotConfigProperties botConfigProperties, UserService userService, LogSenderService logSenderService) {
+    public Bot(BotConfigProperties botConfigProperties, UserService userService, LogSenderService logSenderService, StatusMessageService statusMessageService) {
         super(botConfigProperties.getBotToken());
         this.botConfigProperties = botConfigProperties;
         this.userService = userService;
         this.logSenderService = logSenderService;
+        this.statusMessageService = statusMessageService;
         logger.info("bot initialized created");
     }
 
@@ -59,8 +62,13 @@ public class Bot extends TelegramLongPollingBot {
 
     public void updateFromPersonalChat(Update update) {
         var msg = update.getMessage();
+
         if (msg.getText().equals("/log")) {
             logSenderService.sendLogFile();
+        }
+
+        if (msg.getText().equals("/status")) {
+            statusMessageService.sendStatusMessage();
         }
     }
 

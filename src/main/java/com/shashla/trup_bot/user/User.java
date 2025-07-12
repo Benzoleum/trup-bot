@@ -27,7 +27,7 @@ public class User {
         resolveNickname(username);
     }
 
-    public void resolveNickname(String username) {
+    private void resolveNickname(String username) {
         if (username.equals("Ayan_A_B")) {
             this.nickname = "Величайший";
         } else if (username.equals("Timur996")) {
@@ -49,5 +49,9 @@ public class User {
 
     public void resetMessageCount() {
         this.messageCount = 0;
+    }
+
+    public void incrementTrupCount() {
+        this.trupCount++;
     }
 }

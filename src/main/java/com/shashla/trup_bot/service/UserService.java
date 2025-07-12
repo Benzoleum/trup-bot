@@ -37,7 +37,7 @@ public class UserService {
         }
     }
 
-    public void resetUserMessageCountInCache() {
+    void resetUserMessageCountInCache() {
         for (User userInCache : userCache.values()) {
             logger.info("resetting user message count in cache: " + userInCache.getUsername());
             userInCache.resetMessageCount();
@@ -45,7 +45,7 @@ public class UserService {
         }
     }
 
-    public User getTrup() {
+    User getTrup() {
         int max = Integer.MAX_VALUE;
         User trup = null;
         for (User user : getAllCacheUsers()) {
@@ -54,7 +54,12 @@ public class UserService {
                 trup = user;
             }
         }
-        logger.info("trup: " + trup.getUsername() + " with message count: " + trup.getMessageCount());
+        if (trup != null) {
+            logger.info("trup: " + trup.getUsername() + " with message count: " + trup.getMessageCount());
+            trup.incrementTrupCount();
+        } else {
+            throw new RuntimeException("no trup found in cache");
+        }
         return trup;
     }
 }
