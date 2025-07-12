@@ -12,7 +12,7 @@ import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
 
 @Service
 public class UserStatsMessageService extends DefaultAbsSender {
-    private static final Logger logger = LoggerFactory.getLogger(StatusMessageService.class);
+    private static final Logger logger = LoggerFactory.getLogger(UserStatsMessageService.class);
 
     UserService userService;
     private BotConfigProperties botConfigProperties;
@@ -46,6 +46,10 @@ public class UserStatsMessageService extends DefaultAbsSender {
             sb.append(user.getNickname() + ": " + user.getMessageCount() + "\n");
         });
 
-        return sb.toString();
+        if (sb.length() != 0) {
+            return sb.toString();
+        } else {
+            return "no users registered yet";
+        }
     }
 }
