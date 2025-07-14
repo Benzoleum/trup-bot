@@ -34,7 +34,7 @@ public class WeeklyMessageService extends DefaultAbsSender {
     private void sendOutTrupMessage() {
         try {
             SendMessage message = new SendMessage();
-            message.setChatId(botConfigProperties.getPersonalChatId());
+            message.setChatId(botConfigProperties.getGcChatId());
 
             message.setText("В Лондоне воскресенье, 10 утра.");
             execute(message);

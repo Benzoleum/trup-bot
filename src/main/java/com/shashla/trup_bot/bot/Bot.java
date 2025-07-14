@@ -33,7 +33,7 @@ public class Bot extends TelegramLongPollingBot {
         this.statusMessageService = statusMessageService;
         this.userStatsMessageService = userStatsMessageService;
         this.inlineKeyboardMenuService = inlineKeyboardMenuService;
-        logger.info("bot initialized created");
+        logger.info("bot initialized");
     }
 
     @Override
@@ -83,13 +83,13 @@ public class Bot extends TelegramLongPollingBot {
     private void menuCallbackFromPersonalChat(Update update) throws TelegramApiException {
         if (update.getCallbackQuery().getData().equals(BotManagementConstants.STATUS_COMMAND)) {
             statusMessageService.sendStatusMessage();
-            answerCallbackQuery(update, "status");
+            answerCallbackQuery(update, BotManagementConstants.STATUS_COMMAND);
         } else if (update.getCallbackQuery().getData().equals(BotManagementConstants.LOG_COMMAND)) {
             logSenderService.sendLogFile();
-            answerCallbackQuery(update, "log");
+            answerCallbackQuery(update, BotManagementConstants.LOG_COMMAND);
         } else if (update.getCallbackQuery().getData().equals(BotManagementConstants.USER_STATS_COMMAND)) {
             userStatsMessageService.sendUserStatsMessage();
-            answerCallbackQuery(update, "user stats");
+            answerCallbackQuery(update, BotManagementConstants.USER_STATS_COMMAND);
         } else {
             throw new TelegramApiException("unknown request");
         }
